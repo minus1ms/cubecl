@@ -197,6 +197,18 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
             log::trace!("Using memory pool: \n {pool:?}");
         }
 
+        if let Some(page_size) = pool_options.iter().find_map(|options| {
+            if let PoolType::SlicedPages { page_size, .. } = options.pool_type {
+                Some(page_size)
+            } else {
+                None
+            }
+        }) {
+            if page_size == 2147483648 {
+                todo!("Page Size: {:?}", page_size);
+            }
+        }
+
         let pools: Vec<_> = pool_options
             .iter()
             .map(|options| match options.pool_type {

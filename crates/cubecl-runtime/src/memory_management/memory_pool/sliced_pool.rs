@@ -156,10 +156,6 @@ impl MemoryPool for SlicedPool {
 
 impl SlicedPool {
     pub(crate) fn new(page_size: u64, max_alloc_size: u64, alignment: u64) -> Self {
-        if page_size == 2147483648 {
-            todo!("Page Size: {:?}", page_size);
-        }
-
         // Pages should be allocated to be aligned.
         assert_eq!(page_size % alignment, 0);
         Self {
