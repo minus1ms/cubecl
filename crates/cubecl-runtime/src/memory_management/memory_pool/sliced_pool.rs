@@ -1,3 +1,5 @@
+use std::io::{self, Write};
+
 use super::index::SearchIndex;
 use super::{MemoryPool, RingBuffer, Slice, SliceBinding, SliceHandle, SliceId};
 use crate::memory_management::memory_pool::calculate_padding;
@@ -215,6 +217,7 @@ impl SlicedPool {
 
     /// Creates a page of given size by allocating on the storage.
     fn create_page<Storage: ComputeStorage>(&mut self, storage: &mut Storage) -> StorageId {
+        writeln!(io::stderr(), "{}", self.page_size).unwrap();
         let storage = storage.alloc(self.page_size);
 
         let id = storage.id;
