@@ -215,11 +215,16 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
                 PoolType::SlicedPages {
                     page_size,
                     max_slice_size,
-                } => DynamicPool::Sliced(SlicedPool::new(
-                    page_size,
-                    max_slice_size,
-                    properties.alignment,
-                )),
+                } => {
+                    if page_size == 2147483648 {
+                        todo!("Page Size: {:?}", page_size);
+                    }
+                    DynamicPool::Sliced(SlicedPool::new(
+                        page_size,
+                        max_slice_size,
+                        properties.alignment,
+                    ))
+                }
                 PoolType::ExclusivePages { max_alloc_size } => {
                     DynamicPool::Exclusive(ExclusiveMemoryPool::new(
                         max_alloc_size,
