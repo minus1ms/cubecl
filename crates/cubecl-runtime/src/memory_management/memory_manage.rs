@@ -147,10 +147,6 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
                     });
                 }
 
-                if max_page / memory_alignment * memory_alignment == 2147483648 {
-                    todo!("max_page: {}, mem_align: {}", max_page, memory_alignment);
-                }
-
                 // Add pools from big to small.
                 pools.push(MemoryPoolOptions {
                     pool_type: PoolType::SlicedPages {
