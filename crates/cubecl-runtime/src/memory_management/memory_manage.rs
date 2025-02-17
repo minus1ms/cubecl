@@ -97,7 +97,7 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
         properties: &MemoryDeviceProperties,
         config: MemoryConfiguration,
     ) -> Self {
-        let pool_options = match config {
+        let pool_options = match config.clone() {
             #[cfg(not(exclusive_memory_only))]
             MemoryConfiguration::SubSlices => {
                 // Round chunk size to be aligned.
@@ -193,10 +193,6 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
             MemoryConfiguration::Custom { pool_options } => pool_options,
         };
 
-        for pool in pool_options.iter() {
-            log::trace!("Using memory pool: \n {pool:?}");
-        }
-
         for options in &pool_options {
             match options.pool_type {
                 PoolType::SlicedPages {
@@ -204,11 +200,15 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
                     max_slice_size,
                 } => {
                     if page_size == 2147483648 {
-                        todo!("Page Size: {:?}", page_size);
+                        todo!("Page Size: {:?} {:?}", page_size, config);
                     }
                 }
                 _ => {}
             }
+        }
+
+        for pool in pool_options.iter() {
+            log::trace!("Using memory pool: \n {pool:?}");
         }
 
         let pools: Vec<_> = pool_options
