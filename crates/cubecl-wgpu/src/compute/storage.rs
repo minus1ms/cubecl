@@ -88,10 +88,6 @@ impl ComputeStorage for WgpuStorage {
     }
 
     fn alloc(&mut self, size: u64) -> StorageHandle {
-        if size == 2147483648 {
-            todo!("Size: {:?}", size);
-        }
-
         let id = StorageId::new();
 
         let buffer = self.device.create_buffer(&wgpu::BufferDescriptor {
