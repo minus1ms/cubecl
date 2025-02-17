@@ -147,18 +147,11 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
                     });
                 }
 
-                for options in &pools {
-                    match options.pool_type {
-                        PoolType::SlicedPages {
-                            page_size,
-                            max_slice_size,
-                        } => {
-                            if page_size == 2147483648 {
-                                todo!("Page Size: {:?}", page_size);
-                            }
-                        }
-                        _ => {}
-                    }
+                if max_page / memory_alignment * memory_alignment == 2147483648 {
+                    todo!(
+                        "Page Size: {:?}",
+                        max_page / memory_alignment * memory_alignment
+                    );
                 }
 
                 // Add pools from big to small.
@@ -169,20 +162,6 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
                     },
                     dealloc_period: None,
                 });
-
-                for options in &pools {
-                    match options.pool_type {
-                        PoolType::SlicedPages {
-                            page_size,
-                            max_slice_size,
-                        } => {
-                            if page_size == 2147483648 {
-                                todo!("Page Size: {:?}", page_size);
-                            }
-                        }
-                        _ => {}
-                    }
-                }
 
                 pools
             }
