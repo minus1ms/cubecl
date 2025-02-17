@@ -46,13 +46,13 @@ cfg-if = { workspace = true }
 
 # wgpu dependency for platforms other than macOS
 [target.'cfg(not(target_os = "macos"))'.dependencies]
-wgpu = { git = "https://github.com/gfx-rs/wgpu", features = [
+wgpu = { git = "https://github.com/minus1ms/wgpu", features = [
     "fragile-send-sync-non-atomic-wasm",
 ] }
 # On macOS, the `vulkan-portability` feature is required due to the MoltenVK translation layer.
 # To install MoltenVK, install the VulkanSDK: https://vulkan.lunarg.com/sdk/home#mac
 [target.'cfg(target_os = "macos")'.dependencies]
-wgpu = { git = "https://github.com/gfx-rs/wgpu", features = [
+wgpu = { git = "https://github.com/minus1ms/wgpu", features = [
     "vulkan-portability",
     "fragile-send-sync-non-atomic-wasm",
 ] }
