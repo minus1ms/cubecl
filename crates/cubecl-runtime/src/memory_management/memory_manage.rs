@@ -97,7 +97,7 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
         properties: &MemoryDeviceProperties,
         config: MemoryConfiguration,
     ) -> Self {
-        let pool_options = match config.clone() {
+        let pool_options = match config {
             #[cfg(not(exclusive_memory_only))]
             MemoryConfiguration::SubSlices => {
                 // Round chunk size to be aligned.
@@ -147,6 +147,20 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
                     });
                 }
 
+                for options in &pools {
+                    match options.pool_type {
+                        PoolType::SlicedPages {
+                            page_size,
+                            max_slice_size,
+                        } => {
+                            if page_size == 2147483648 {
+                                todo!("Page Size: {:?}", page_size);
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+
                 // Add pools from big to small.
                 pools.push(MemoryPoolOptions {
                     pool_type: PoolType::SlicedPages {
@@ -155,6 +169,21 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
                     },
                     dealloc_period: None,
                 });
+
+                for options in &pools {
+                    match options.pool_type {
+                        PoolType::SlicedPages {
+                            page_size,
+                            max_slice_size,
+                        } => {
+                            if page_size == 2147483648 {
+                                todo!("Page Size: {:?}", page_size);
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+
                 pools
             }
             MemoryConfiguration::ExclusivePages => {
@@ -192,20 +221,6 @@ impl<Storage: ComputeStorage> MemoryManagement<Storage> {
             }
             MemoryConfiguration::Custom { pool_options } => pool_options,
         };
-
-        for options in &pool_options {
-            match options.pool_type {
-                PoolType::SlicedPages {
-                    page_size,
-                    max_slice_size,
-                } => {
-                    if page_size == 2147483648 {
-                        todo!("Page Size: {:?} {:?}", page_size, config);
-                    }
-                }
-                _ => {}
-            }
-        }
 
         for pool in pool_options.iter() {
             log::trace!("Using memory pool: \n {pool:?}");
